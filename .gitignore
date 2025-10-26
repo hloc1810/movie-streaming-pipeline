@@ -1,0 +1,15 @@
+
+# ==========================================================
+data/          # Dữ liệu Hadoop HDFS (Namenode, Datanode)
+results_q*.txt # Kết quả MapReduce (results_q1.txt, etc.)
+.env           # File chứa API Key cá nhân 
+
+# ==========================================================
+# Cache và Build files
+# ==========================================================
+__pycache__/   # Cache Python
+*.pyc          # Compiled Python files
+.ivy2/         # Spark/Scala Package Cache (Rất nặng)
+venv/          # Môi trường ảo Python
+.venv/
+*.log          # Logs file

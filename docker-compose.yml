@@ -1,0 +1,224 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: movie-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - movie-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    networks:
+      - movie-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+ # ==================== MONGODB====================
+  
+  mongodb:
+      image: mongo:6
+      container_name: mongodb
+      ports:
+        - "27017:27017"
+      networks:
+        - movie-network
+      volumes:
+        - mongo-data:/data/db 
+
+
+ # ==================== HADOOP ====================
+  namenode:
+    build:
+      context: .
+      dockerfile: Dockerfile.namenode
+    container_name: namenode
+    environment:
+      - CLUSTER_NAME=movie-cluster
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    volumes:
+      - ./data/namenode:/hadoop/dfs/name
+      - ./mapreduce_scripts:/mapreduce_scripts
+    networks:
+      - movie-network
+    hostname: namenode
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - ./data/datanode:/hadoop/dfs/data
+    depends_on:
+      - namenode
+    networks:
+      - movie-network
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8088:8088"  
+    depends_on:
+      - namenode
+      - datanode
+    networks:
+      - movie-network
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    networks:
+      - movie-network
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - ./data/historyserver:/hadoop/yarn/timeline
+    depends_on:
+      - namenode
+      - datanode
+    networks:
+      - movie-network
+
+  # ==================== MOVIE PRODUCER ====================
+  movie-producer:
+    build: ./producer
+    container_name: movie-producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - TMDB_API_KEY=${TMDB_API_KEY}
+    networks:
+      - movie-network
+    restart: unless-stopped
+
+  # ==================== SPARK CLUSTER ====================
+  spark-master:
+    image: apache/spark:3.4.1
+    container_name: spark-master
+    command: |
+      bash -c "
+      /opt/spark/sbin/start-master.sh --host spark-master --port 7077 --webui-port 8080 &&
+      tail -f /opt/spark/logs/*
+      "
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+    ports:
+      - "8080:8080"  
+      - "7077:7077"  
+    networks:
+      - movie-network
+    volumes:
+      - ./spark:/opt/spark/work-dir
+
+  spark-worker:
+    image: apache/spark:3.4.1
+    container_name: spark-worker
+    command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_WORKER_CORES=4 
+      - SPARK_WORKER_MEMORY=4g
+    networks:
+      - movie-network
+    volumes:
+      - ./spark:/opt/spark/work-dir
+
+  spark-worker-2:
+    image: apache/spark:3.4.1
+    container_name: spark-worker-2
+    command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_WORKER_CORES=4 
+      - SPARK_WORKER_MEMORY=4g
+    networks:
+      - movie-network
+    volumes:
+      - ./spark:/opt/spark/work-dir
+    
+    
+
+  spark-submit:
+    image: apache/spark:3.4.1
+    container_name: spark-submit
+    depends_on:
+      - spark-master
+      - kafka
+      - mongodb
+    command: >
+      bash -c "
+      echo 'Đợi 30 giây để các services sẵn sàng...' &&
+      sleep 30 &&
+      echo 'Bắt đầu submit Spark Streaming job...' &&
+      /opt/spark/bin/spark-submit
+      --master spark://spark-master:7077
+      --packages 'org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1,org.mongodb.spark:mongo-spark-connector_2.12:10.1.1'
+      --conf 'spark.jars.ivy=/opt/spark/work-dir/.ivy2'
+      --conf spark.mongodb.write.connection.uri=mongodb://mongodb:27017/movies.movie_data
+      /opt/spark/work-dir/spark_streaming_app.py
+      "
+    networks:
+      - movie-network
+    volumes:
+      - ./spark:/opt/spark/work-dir
+      - ./.ivy2:/opt/spark/work-dir/.ivy2
+      - ./.ivy2:/home/spark/.ivy2 
+    restart: unless-stopped
+
+networks:
+  movie-network:
+    driver: bridge
+volumes:
+  mongo-data:
+    # (Để trống là đủ, Docker sẽ tự quản lý)
