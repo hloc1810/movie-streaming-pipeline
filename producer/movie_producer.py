@@ -142,10 +142,8 @@ while True:
                     message_count += 1
                     
                     genres_str = ", ".join(genres[:1])  
-                    print(f"✅ #{message_count}: {movie_data['title'][:40]:<40}", flush=True)
-                    
-                    time.sleep(2)
-                
+                    print(f"✅ #{message_count}: {movie_data}", flush=True)
+                                   
                 page += 1                    
             else:
                 print("⚠️ Không có dữ liệu phim", flush=True)

@@ -10,7 +10,6 @@ print("=" * 60)
 spark = SparkSession.builder \
     .appName("MovieETL_Unified") \
     .config("spark.mongodb.read.connection.uri", "mongodb://mongodb:27017/movies.movie_data") \
-    .config("spark.mongodb.wri on.uri", "mongodb://mongodb:27017/movies.movies_silver") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
@@ -24,10 +23,6 @@ df = spark.read \
 
 total_records = df.count()
 print(f"📊 Tổng số records từ MongoDB: {total_records}")
-
-# Hiển thị schema
-print("\n📋 Schema từ MongoDB:")
-df.printSchema()
 
 # Chọn các cột cần thiết và làm sạch
 print("\n🔧 Đang ETL và làm sạch dữ liệu...")
@@ -91,7 +86,7 @@ df_exploded = df_validated \
 
 # kiểm tra dữ liệu sau transform
 print("\n📝 Mẫu data sau transform:")
-df_exploded.select("title", "year", "rating", "votes", "genre").show(20, truncate=False)
+df_exploded.select("title", "year", "rating", "votes", "genre").show(5, truncate=False)
 
 # Thống kê trước khi ghi
 print("\n" + "=" * 60)
@@ -101,23 +96,6 @@ print("=" * 60)
 
 print(f"Số phim unique: {df_exploded.select('movie_id').distinct().count():,}")
 print(f"Số genres unique: {df_exploded.select('genre').distinct().count()}")
-
-# # Thống kê theo năm
-# year_stats = df_exploded.groupBy("year").count().orderBy("year", ascending=False)
-# print("\n📅 Phân bố theo năm (Top 10):")
-# year_stats.show(10)
-
-# Thống kê theo genre
-# genre_stats = df_exploded.groupBy("genre").count().orderBy("count", ascending=False)
-# print("\n🎭 Phân bố theo genre:")
-# genre_stats.show(20)
-
-# Rating statistics
-# rating_stats = df_exploded.select(
-#     "rating"
-# ).describe()
-# print("\n⭐ Thống kê rating:")
-# rating_stats.show()
 
 # Lưu vào HDFS dạng JSONL
 hdfs_path_jsonl = "hdfs://namenode:9000/data/movies/silver/movies.jsonl"

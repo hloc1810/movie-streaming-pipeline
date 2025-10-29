@@ -2,7 +2,6 @@
 # ==========================================================
 data/          # Dữ liệu Hadoop HDFS (Namenode, Datanode)
 results_q*.txt # Kết quả MapReduce (results_q1.txt, etc.)
-.env           # File chứa API Key cá nhân 
 
 # ==========================================================
 # Cache và Build files

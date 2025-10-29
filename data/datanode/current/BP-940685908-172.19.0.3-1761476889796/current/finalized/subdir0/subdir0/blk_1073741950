@@ -1,0 +1,231 @@
+Avro-Binary
+{"type":"record","name":"Event","namespace":"org.apache.hadoop.mapreduce.jobhistory","fields":[{"name":"type","type":{"type":"enum","name":"EventType","symbols":["JOB_SUBMITTED","JOB_INITED","JOB_FINISHED","JOB_PRIORITY_CHANGED","JOB_STATUS_CHANGED","JOB_QUEUE_CHANGED","JOB_FAILED","JOB_KILLED","JOB_ERROR","JOB_INFO_CHANGED","TASK_STARTED","TASK_FINISHED","TASK_FAILED","TASK_UPDATED","NORMALIZED_RESOURCE","MAP_ATTEMPT_STARTED","MAP_ATTEMPT_FINISHED","MAP_ATTEMPT_FAILED","MAP_ATTEMPT_KILLED","REDUCE_ATTEMPT_STARTED","REDUCE_ATTEMPT_FINISHED","REDUCE_ATTEMPT_FAILED","REDUCE_ATTEMPT_KILLED","SETUP_ATTEMPT_STARTED","SETUP_ATTEMPT_FINISHED","SETUP_ATTEMPT_FAILED","SETUP_ATTEMPT_KILLED","CLEANUP_ATTEMPT_STARTED","CLEANUP_ATTEMPT_FINISHED","CLEANUP_ATTEMPT_FAILED","CLEANUP_ATTEMPT_KILLED","AM_STARTED"]}},{"name":"event","type":[{"type":"record","name":"JobFinished","fields":[{"name":"jobid","type":"string"},{"name":"finishTime","type":"long"},{"name":"finishedMaps","type":"int"},{"name":"finishedReduces","type":"int"},{"name":"failedMaps","type":"int"},{"name":"failedReduces","type":"int"},{"name":"totalCounters","type":{"type":"record","name":"JhCounters","fields":[{"name":"name","type":"string"},{"name":"groups","type":{"type":"array","items":{"type":"record","name":"JhCounterGroup","fields":[{"name":"name","type":"string"},{"name":"displayName","type":"string"},{"name":"counts","type":{"type":"array","items":{"type":"record","name":"JhCounter","fields":[{"name":"name","type":"string"},{"name":"displayName","type":"string"},{"name":"value","type":"long"}]}}}]}}}]}},{"name":"mapCounters","type":"JhCounters"},{"name":"reduceCounters","type":"JhCounters"},{"name":"killedMaps","type":"int","default":-1},{"name":"killedReduces","type":"int","default":-1}]},{"type":"record","name":"JobInfoChange","fields":[{"name":"jobid","type":"string"},{"name":"submitTime","type":"long"},{"name":"launchTime","type":"long"}]},{"type":"record","name":"JobInited","fields":[{"name":"jobid","type":"string"},{"name":"launchTime","type":"long"},{"name":"totalMaps","type":"int"},{"name":"totalReduces","type":"int"},{"name":"jobStatus","type":"string"},{"name":"uberized","type":"boolean"}]},{"type":"record","name":"AMStarted","fields":[{"name":"applicationAttemptId","type":"string"},{"name":"startTime","type":"long"},{"name":"containerId","type":"string"},{"name":"nodeManagerHost","type":"string"},{"name":"nodeManagerPort","type":"int"},{"name":"nodeManagerHttpPort","type":"int"}]},{"type":"record","name":"JobPriorityChange","fields":[{"name":"jobid","type":"string"},{"name":"priority","type":"string"}]},{"type":"record","name":"JobQueueChange","fields":[{"name":"jobid","type":"string"},{"name":"jobQueueName","type":"string"}]},{"type":"record","name":"JobStatusChanged","fields":[{"name":"jobid","type":"string"},{"name":"jobStatus","type":"string"}]},{"type":"record","name":"JobSubmitted","fields":[{"name":"jobid","type":"string"},{"name":"jobName","type":"string"},{"name":"userName","type":"string"},{"name":"submitTime","type":"long"},{"name":"jobConfPath","type":"string"},{"name":"acls","type":{"type":"map","values":"string"}},{"name":"jobQueueName","type":"string"},{"name":"workflowId","type":["null","string"],"default":null},{"name":"workflowName","type":["null","string"],"default":null},{"name":"workflowNodeName","type":["null","string"],"default":null},{"name":"workflowAdjacencies","type":["null","string"],"default":null},{"name":"workflowTags","type":["null","string"],"default":null}]},{"type":"record","name":"JobUnsuccessfulCompletion","fields":[{"name":"jobid","type":"string"},{"name":"finishTime","type":"long"},{"name":"finishedMaps","type":"int"},{"name":"finishedReduces","type":"int"},{"name":"jobStatus","type":"string"},{"name":"diagnostics","type":["null","string"],"default":null},{"name":"failedMaps","type":"int","default":-1},{"name":"failedReduces","type":"int","default":-1},{"name":"killedMaps","type":"int","default":-1},{"name":"killedReduces","type":"int","default":-1}]},{"type":"record","name":"MapAttemptFinished","fields":[{"name":"taskid","type":"string"},{"name":"attemptId","type":"string"},{"name":"taskType","type":"string"},{"name":"taskStatus","type":"string"},{"name":"mapFinishTime","type":"long"},{"name":"finishTime","type":"long"},{"name":"hostname","type":"string"},{"name":"port","type":"int"},{"name":"rackname","type":"string"},{"name":"state","type":"string"},{"name":"counters","type":"JhCounters"},{"name":"clockSplits","type":{"type":"array","items":"int"}},{"name":"cpuUsages","type":{"type":"array","items":"int"}},{"name":"vMemKbytes","type":{"type":"array","items":"int"}},{"name":"physMemKbytes","type":{"type":"array","items":"int"}}]},{"type":"record","name":"ReduceAttemptFinished","fields":[{"name":"taskid","type":"string"},{"name":"attemptId","type":"string"},{"name":"taskType","type":"string"},{"name":"taskStatus","type":"string"},{"name":"shuffleFinishTime","type":"long"},{"name":"sortFinishTime","type":"long"},{"name":"finishTime","type":"long"},{"name":"hostname","type":"string"},{"name":"port","type":"int"},{"name":"rackname","type":"string"},{"name":"state","type":"string"},{"name":"counters","type":"JhCounters"},{"name":"clockSplits","type":{"type":"array","items":"int"}},{"name":"cpuUsages","type":{"type":"array","items":"int"}},{"name":"vMemKbytes","type":{"type":"array","items":"int"}},{"name":"physMemKbytes","type":{"type":"array","items":"int"}}]},{"type":"record","name":"TaskAttemptFinished","fields":[{"name":"taskid","type":"string"},{"name":"attemptId","type":"string"},{"name":"taskType","type":"string"},{"name":"taskStatus","type":"string"},{"name":"finishTime","type":"long"},{"name":"rackname","type":"string"},{"name":"hostname","type":"string"},{"name":"state","type":"string"},{"name":"counters","type":"JhCounters"}]},{"type":"record","name":"TaskAttemptStarted","fields":[{"name":"taskid","type":"string"},{"name":"taskType","type":"string"},{"name":"attemptId","type":"string"},{"name":"startTime","type":"long"},{"name":"trackerName","type":"string"},{"name":"httpPort","type":"int"},{"name":"shufflePort","type":"int"},{"name":"containerId","type":"string"},{"name":"locality","type":["null","string"],"default":null},{"name":"avataar","type":["null","string"],"default":null}]},{"type":"record","name":"TaskAttemptUnsuccessfulCompletion","fields":[{"name":"taskid","type":"string"},{"name":"taskType","type":"string"},{"name":"attemptId","type":"string"},{"name":"finishTime","type":"long"},{"name":"hostname","type":"string"},{"name":"port","type":"int"},{"name":"rackname","type":"string"},{"name":"status","type":"string"},{"name":"error","type":"string"},{"name":"counters","type":["null","JhCounters"],"default":null},{"name":"clockSplits","type":{"type":"array","items":"int"}},{"name":"cpuUsages","type":{"type":"array","items":"int"}},{"name":"vMemKbytes","type":{"type":"array","items":"int"}},{"name":"physMemKbytes","type":{"type":"array","items":"int"}}]},{"type":"record","name":"TaskFailed","fields":[{"name":"taskid","type":"string"},{"name":"taskType","type":"string"},{"name":"finishTime","type":"long"},{"name":"error","type":"string"},{"name":"failedDueToAttempt","type":["null","string"]},{"name":"status","type":"string"},{"name":"counters","type":["null","JhCounters"],"default":null}]},{"type":"record","name":"TaskFinished","fields":[{"name":"taskid","type":"string"},{"name":"taskType","type":"string"},{"name":"finishTime","type":"long"},{"name":"status","type":"string"},{"name":"counters","type":"JhCounters"},{"name":"successfulAttemptId","type":["null","string"],"default":null}]},{"type":"record","name":"TaskStarted","fields":[{"name":"taskid","type":"string"},{"name":"taskType","type":"string"},{"name":"startTime","type":"long"},{"name":"splitLocations","type":"string"}]},{"type":"record","name":"TaskUpdated","fields":[{"name":"taskid","type":"string"},{"name":"finishTime","type":"long"}]}]}]}
+>Happattempt_1761567984883_0001_000001∏ÆË⁄ƒfTcontainer_e02_1761567984883_0001_01_0000016937a2edc420Ó¨‘} ,job_1761567984883_0001@streamjob5126912981321819285.jarrootÄﬁ†⁄ƒf≤hdfs://namenode:9000/tmp/hadoop-yarn/staging/root/.staging/job_1761567984883_0001/job.xml default     
+
+,job_1761567984883_0001default,job_1761567984883_0001˛–Ë⁄ƒfINITED ,job_1761567984883_0001Äﬁ†⁄ƒf˛–Ë⁄ƒf @task_1761567984883_0001_m_000000MAPﬁ—Ë⁄ƒf528fab8edc17 @task_1761567984883_0001_m_000001MAP‚—Ë⁄ƒf528fab8edc17 @task_1761567984883_0001_r_000000REDUCE‰—Ë⁄ƒf @task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_0¶ÇÈ⁄ƒf6937a2edc420‘}Ù”Tcontainer_e02_1761567984883_0001_01_000002RACK_LOCALVIRGIN"@task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_0úôÈ⁄ƒf6937a2edc420Ó¨/default-rackFAILED–+Error: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:462)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:349)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:174)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:168)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 9 more
+Caused by: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:38)
+	... 14 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 17 more
+Caused by: java.lang.RuntimeException: configuration exception
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:222)
+	at org.apache.hadoop.streaming.PipeMapper.configure(PipeMapper.java:66)
+	... 22 more
+Caused by: java.io.IOException: Cannot run program "python3": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:209)
+	... 23 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	... 24 more
+COUNTERSNorg.apache.hadoop.mapreduce.TaskCounter(Map-Reduce FrameworkSPILLED_RECORDSSpilled Records FAILED_SHUFFLEFailed Shuffles $MERGED_MAP_OUTPUTS$Merged Map outputs  CPU_MILLISECONDS&CPU time spent (ms) *PHYSICAL_MEMORY_BYTES@Physical memory (bytes) snapshot (VIRTUAL_MEMORY_BYTES>Virtual memory (bytes) snapshot   Ë                                            @task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_1ÿØÈ⁄ƒf6937a2edc420‘}Ù”Tcontainer_e02_1761567984883_0001_01_000003RACK_LOCALVIRGIN"@task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_1® È⁄ƒf6937a2edc420Ó¨/default-rackFAILED–+Error: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:462)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:349)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:174)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:168)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 9 more
+Caused by: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:38)
+	... 14 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 17 more
+Caused by: java.lang.RuntimeException: configuration exception
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:222)
+	at org.apache.hadoop.streaming.PipeMapper.configure(PipeMapper.java:66)
+	... 22 more
+Caused by: java.io.IOException: Cannot run program "python3": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:209)
+	... 23 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	... 24 more
+COUNTERSNorg.apache.hadoop.mapreduce.TaskCounter(Map-Reduce FrameworkSPILLED_RECORDSSpilled Records FAILED_SHUFFLEFailed Shuffles $MERGED_MAP_OUTPUTS$Merged Map outputs  CPU_MILLISECONDS&CPU time spent (ms) *PHYSICAL_MEMORY_BYTES@Physical memory (bytes) snapshot (VIRTUAL_MEMORY_BYTES>Virtual memory (bytes) snapshot   æ                                          @task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_2ﬁÈ⁄ƒf6937a2edc420‘}Ù”Tcontainer_e02_1761567984883_0001_01_000004RACK_LOCALVIRGIN"@task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_2⁄ıÈ⁄ƒf6937a2edc420Ó¨/default-rackFAILED–+Error: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:462)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:349)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:174)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:168)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 9 more
+Caused by: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:38)
+	... 14 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 17 more
+Caused by: java.lang.RuntimeException: configuration exception
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:222)
+	at org.apache.hadoop.streaming.PipeMapper.configure(PipeMapper.java:66)
+	... 22 more
+Caused by: java.io.IOException: Cannot run program "python3": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:209)
+	... 23 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	... 24 more
+COUNTERSNorg.apache.hadoop.mapreduce.TaskCounter(Map-Reduce FrameworkSPILLED_RECORDSSpilled Records FAILED_SHUFFLEFailed Shuffles $MERGED_MAP_OUTPUTS$Merged Map outputs  CPU_MILLISECONDS&CPU time spent (ms) *PHYSICAL_MEMORY_BYTES@Physical memory (bytes) snapshot (VIRTUAL_MEMORY_BYTES>Virtual memory (bytes) snapshot   ‹                                            @task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_3¬ùÍ⁄ƒf6937a2edc420‘}Ù”Tcontainer_e02_1761567984883_0001_01_000005RACK_LOCALVIRGIN"@task_1761567984883_0001_m_000000MAPJattempt_1761567984883_0001_m_000000_3î¥Í⁄ƒf6937a2edc420Ó¨/default-rackFAILED–+Error: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:462)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:349)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:174)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:168)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 9 more
+Caused by: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:38)
+	... 14 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 17 more
+Caused by: java.lang.RuntimeException: configuration exception
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:222)
+	at org.apache.hadoop.streaming.PipeMapper.configure(PipeMapper.java:66)
+	... 22 more
+Caused by: java.io.IOException: Cannot run program "python3": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:209)
+	... 23 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	... 24 more
+COUNTERSNorg.apache.hadoop.mapreduce.TaskCounter(Map-Reduce FrameworkSPILLED_RECORDSSpilled Records FAILED_SHUFFLEFailed Shuffles $MERGED_MAP_OUTPUTS$Merged Map outputs  CPU_MILLISECONDS&CPU time spent (ms) *PHYSICAL_MEMORY_BYTES@Physical memory (bytes) snapshot (VIRTUAL_MEMORY_BYTES>Virtual memory (bytes) snapshot   ƒ                                            @task_1761567984883_0001_m_000000MAPî¥Í⁄ƒf‘+, Error: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:462)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:349)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:174)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:168)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 9 more
+Caused by: java.lang.RuntimeException: Error in configuring object
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:113)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:79)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:137)
+	at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:38)
+	... 14 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:110)
+	... 17 more
+Caused by: java.lang.RuntimeException: configuration exception
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:222)
+	at org.apache.hadoop.streaming.PipeMapper.configure(PipeMapper.java:66)
+	... 22 more
+Caused by: java.io.IOException: Cannot run program "python3": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at org.apache.hadoop.streaming.PipeMapRed.configure(PipeMapRed.java:209)
+	... 23 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	... 24 more
+Jattempt_1761567984883_0001_m_000000_3FAILEDCOUNTERS $@task_1761567984883_0001_m_000001MAPJattempt_1761567984883_0001_m_000001_0 UNKNOWNUNKNOWNKILLEDNTask KILL is received. Killing attempt!COUNTERS     ,@task_1761567984883_0001_r_000000REDUCEJattempt_1761567984883_0001_r_000000_0 UNKNOWNUNKNOWNKILLEDNTask KILL is received. Killing attempt!COUNTERS     @task_1761567984883_0001_m_000001MAPû¥Í⁄ƒf  KILLEDCOUNTERS @task_1761567984883_0001_r_000000REDUCEû¥Í⁄ƒf  KILLEDCOUNTERS ,job_1761567984883_0001ö¥Í⁄ƒf  FAILEDÜTask failed task_1761567984883_0001_m_000000
+Job failed as tasks failed. failedMaps:1 failedReduces:0 killedMaps:0 killedReduces: 0   

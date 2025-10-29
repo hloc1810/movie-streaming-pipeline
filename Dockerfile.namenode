@@ -1,0 +1,35 @@
+# Sử dụng image namenode gốc
+FROM bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+
+
+USER root
+
+
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
+RUN sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+# Bây giờ mới chạy update và cài đặt
+RUN apt-get update && apt-get install -y python3
+
+# Tạo script để tự động thoát Safe Mode
+RUN echo '#!/bin/bash' > /wait-for-hdfs.sh && \
+    echo 'set -e' >> /wait-for-hdfs.sh && \
+    echo 'echo "Waiting for HDFS to be ready..."' >> /wait-for-hdfs.sh && \
+    echo 'sleep 30' >> /wait-for-hdfs.sh && \
+    echo 'if hdfs dfsadmin -safemode get 2>/dev/null | grep -q "Safe mode is ON"; then' >> /wait-for-hdfs.sh && \
+    echo '  echo "HDFS is in Safe Mode. Forcing to leave..."' >> /wait-for-hdfs.sh && \
+    echo '  hdfs dfsadmin -safemode leave || true' >> /wait-for-hdfs.sh && \
+    echo '  sleep 5' >> /wait-for-hdfs.sh && \
+    echo 'fi' >> /wait-for-hdfs.sh && \
+    echo 'echo "HDFS is ready!"' >> /wait-for-hdfs.sh && \
+    chmod +x /wait-for-hdfs.sh
+
+# Override entrypoint để chạy script sau khi namenode khởi động
+RUN echo '#!/bin/bash' > /custom-entrypoint.sh && \
+    echo '/entrypoint.sh /run.sh &' >> /custom-entrypoint.sh && \
+    echo 'sleep 40 && /wait-for-hdfs.sh &' >> /custom-entrypoint.sh && \
+    echo 'wait' >> /custom-entrypoint.sh && \
+    chmod +x /custom-entrypoint.sh
+
+ENTRYPOINT ["/custom-entrypoint.sh"]

@@ -12,6 +12,7 @@ spark = SparkSession.builder \
     .config("spark.cores.max", "4") \
     .config("spark.executor.cores", "2") \
     .config("spark.mongodb.write.connection.uri", "mongodb://mongodb:27017/movies.movie_data") \
+    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1,org.mongodb.spark:mongo-spark-connector_2.12:10.1.1") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
