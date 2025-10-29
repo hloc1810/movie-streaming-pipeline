@@ -475,20 +475,6 @@ docker-compose up -d
 - MongoDB không có authentication (chỉ dev environment)
 - HDFS replication factor = 1 (single datanode)
 
-## 🤝 Contributing
 
-Pull requests are welcome! Các ý tưởng cải thiện:
-- [ ] Thêm authentication cho MongoDB
-- [ ] Real-time dashboard với Grafana
-- [ ] More MapReduce analytics jobs
-- [ ] Data quality checks
-- [ ] CI/CD pipeline
-- [ ] Unit tests
 
-## 📄 License
-
-This project is open source and available for educational purposes.
-
----
-
-**Created with ❤️ for Big Data Learning**
+**Created with ❤️ for Data Engineer Learning**
