@@ -13,7 +13,7 @@ Hệ thống xử lý và phân tích dữ liệu phim theo thời gian thực, 
 - [MapReduce Jobs](#-mapreduce-jobs)
 - [API Keys](#-api-keys)
 - [Ports và Services](#-ports-và-services)
-- [Troubleshooting](#-troubleshooting)
+
 
 ## 🎯 Tổng quan
 
@@ -44,7 +44,7 @@ TMDB API
 ### Luồng dữ liệu chi tiết:
 
 1. **Data Ingestion (Real-time)**
-   - Producer gọi TMDB API mỗi 5 giây
+   - Producer gọi TMDB API 
    - Gửi dữ liệu phim vào Kafka topic `movies`
    - Tự động chuyển đổi genre IDs thành tên
 
@@ -392,39 +392,6 @@ Truy cập: http://localhost:8088
 - Job history
 - Resource usage
 
-## ⚠️ Troubleshooting
-
-### HDFS Safe Mode
-
-```bash
-docker exec -it namenode hdfs dfsadmin -safemode leave
-```
-
-### Kafka connection failed
-
-```bash
-# Restart Kafka
-docker-compose restart kafka zookeeper
-```
-
-### MongoDB connection issues
-
-```bash
-docker-compose restart mongodb
-docker logs mongodb
-```
-
-### Spark job failed
-
-```bash
-# Check logs
-docker logs spark-submit
-docker logs spark-master
-
-# Restart Spark cluster
-docker-compose restart spark-master spark-worker spark-worker-2
-```
-
 ### Clear all data và restart
 
 ```bash
@@ -466,15 +433,6 @@ docker-compose up -d
 5. **NoSQL**: MongoDB document store
 6. **Big Data**: MapReduce programming model
 7. **DevOps**: Docker, containerization
-
-## 📝 Notes
-
-- Dữ liệu trong `data/` được gitignore
-- Results files `results_q*.txt` được gitignore
-- Producer chạy liên tục, dừng bằng `docker-compose stop movie-producer`
-- MongoDB không có authentication (chỉ dev environment)
-- HDFS replication factor = 1 (single datanode)
-
 
 
 **Created with ❤️ for Data Engineer Learning**
